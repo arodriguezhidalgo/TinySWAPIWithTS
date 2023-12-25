@@ -4,7 +4,7 @@ export async function reachAPI() {
   return movies;
 }
 
-function getHTMLListByID(id: string): HTMLElement {
+export function getHTMLListByID(id: string): HTMLElement {
   return document.querySelector(id) as HTMLElement;
 }
 
