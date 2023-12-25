@@ -1,17 +1,16 @@
-export function add(numbers: string): number {
-    let integers = numbers.split(',').map(x => parseInt(x));
-    let negatives = integers.filter(x => x < 0);
-
-    if (negatives.length > 0)
-        throw new RangeError('Negatives are not allowed: ' + negatives.join(', '));
-
-    return integers
-        .filter(x => x <= 1000)
-        .reduce((a, b) => a + b, 0);
+export async function reachAPI() {
+  const response = await fetch("https://swapi.dev/api/");
+  const movies = await response.json();
+  return movies;
 }
 
-export async function reachAPI() {
-    const response = await fetch("https://swapi.dev/api/");
-    const movies = await response.json();    
-    return movies;
+function getHTMLListByID(id: string): HTMLElement {
+  return document.querySelector(id) as HTMLElement;
+}
+
+export function writeItemsToHTMLList(
+  items: Object,
+  ulElementHandle: HTMLElement
+): void {
+  // This function writes items from an Object to some HTML <ul> element.
 }
