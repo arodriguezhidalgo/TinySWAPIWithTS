@@ -34,9 +34,10 @@ const waitUntilTime = 20000;
 // jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60 * 5;
 
 describe("testing index file", () => {
-  test("SWAPI should return some default fields that we can then read.", async () => {
-    const w = await driver.get("file:///home/antonior/Projects/sw/src/index.html");
-    console.log(w);
+  test("Writes elements in the index ul.", async () => {
+    await driver.get("file:///home/antonior/Projects/sw/src/index.html");    
+    const ulItem = await driver.findElement(By.className("index-content"));
+    console.log(ulItem);
   });
 });
 
