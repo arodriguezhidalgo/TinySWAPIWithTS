@@ -20,14 +20,17 @@ async function getElementByXPath(xpath) {
 const rootURL = "https://www.mozilla.org/en-US/";
 let driver;
 jest.setTimeout(20000);
-beforeAll(() => {
-  
+beforeAll(async () => {
+  // Create the driver object.
   driver = new Builder().forBrowser("firefox").build();
+
+  // Locate our index web page, which will work as our test fixture.
+  await driver.get("file:///home/antonior/Projects/sw/src/index.html");
 });
 
 afterAll(() => {
   driver.close();
-})
+});
 
 const waitUntilTime = 20000;
 // let driver, el, actual, expected;
@@ -35,10 +38,8 @@ const waitUntilTime = 20000;
 
 describe("testing index file", () => {
   test("Writes elements in the index ul.", async () => {
-    await driver.get("file:///home/antonior/Projects/sw/src/index.html");    
+    // More about locators here: https://www.selenium.dev/documentation/webdriver/elements/locators/
     const ulItem = await driver.findElement(By.className("index-content"));
     console.log(ulItem);
   });
 });
-
-
