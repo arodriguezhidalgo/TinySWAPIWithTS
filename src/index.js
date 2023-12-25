@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.writeItemsToHTMLList = exports.reachAPI = void 0;
+exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = void 0;
 function reachAPI() {
     return __awaiter(this, void 0, void 0, function () {
         var response, movies;
@@ -57,7 +57,23 @@ exports.reachAPI = reachAPI;
 function getHTMLListByID(id) {
     return document.querySelector(id);
 }
+exports.getHTMLListByID = getHTMLListByID;
 function writeItemsToHTMLList(items, ulElementHandle) {
     // This function writes items from an Object to some HTML <ul> element.
+    // Extract the keys in an array.
+    var objectKeys = Object.keys(items);
+    // Iterate using the keys, and process each item.
+    for (var _i = 0, objectKeys_1 = objectKeys; _i < objectKeys_1.length; _i++) {
+        var key = objectKeys_1[_i];
+        var li = document.createElement("li");
+        li.setAttribute("class", "index-item");
+        li.innerText = key;
+        ulElementHandle.appendChild(li);
+        return ulElementHandle;
+        // console.log(key, items[key]);
+    }
+    //     a = document.querySelector(".index-content")
+    // el= {"planet": "url1"}
+    // writeItemsToHTMLList(el, a)
 }
 exports.writeItemsToHTMLList = writeItemsToHTMLList;

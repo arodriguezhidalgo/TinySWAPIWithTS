@@ -2,7 +2,6 @@ const { Builder, By, Key, until } = require("selenium-webdriver");
 import { reachAPI } from "../src/index";
 import "selenium-webdriver/firefox";
 import "geckodriver";
-// import "jasmine";
 
 async function getElementById(id) {
   const el = await driver.wait(until.elementLocated(By.id(id)), waitUntilTime);
@@ -17,17 +16,21 @@ async function getElementByXPath(xpath) {
 }
 
 // Initialize selenium
-const rootURL = "https://www.mozilla.org/en-US/";
+const rootURL = "file:///home/antonior/Projects/sw/src/index.html";
 let driver;
+// Increase timeout so the browser has enough time to open.
 jest.setTimeout(20000);
+
+// Setup.
 beforeAll(async () => {
   // Create the driver object.
   driver = new Builder().forBrowser("firefox").build();
 
   // Locate our index web page, which will work as our test fixture.
-  await driver.get("file:///home/antonior/Projects/sw/src/index.html");
+  await driver.get(rootURL);
 });
 
+// Teardown.
 afterAll(() => {
   driver.close();
 });

@@ -1,3 +1,5 @@
+import { WebElement } from "selenium-webdriver/lib/webdriver";
+
 export async function reachAPI() {
   const response = await fetch("https://swapi.dev/api/");
   const movies = await response.json();
@@ -11,6 +13,26 @@ export function getHTMLListByID(id: string): HTMLElement {
 export function writeItemsToHTMLList(
   items: Object,
   ulElementHandle: HTMLElement
-): void {
+) : HTMLElement{
   // This function writes items from an Object to some HTML <ul> element.
+
+  
+  // Extract the keys in an array.
+  const objectKeys = Object.keys(items) as Array<keyof Object>;
+
+  // Iterate using the keys, and process each item.
+  for (let key of objectKeys) {
+    const li = document.createElement("li");
+    li.setAttribute("class", "index-item");
+    li.innerText = key;
+
+    ulElementHandle.appendChild(li);
+    
+    // console.log(key, items[key]);
+  }
+
+  return <HTMLElement> ulElementHandle;
+  //     a = document.querySelector(".index-content")
+  // el= {"planet": "url1"}
+  // writeItemsToHTMLList(el, a)
 }
