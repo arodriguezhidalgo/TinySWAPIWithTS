@@ -1,4 +1,5 @@
 "use strict";
+// import { WebElement } from "selenium-webdriver/lib/webdriver";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = void 0;
+exports.renderIndexPage = exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = void 0;
 function reachAPI() {
     return __awaiter(this, void 0, void 0, function () {
         var response, movies;
@@ -69,11 +70,14 @@ function writeItemsToHTMLList(items, ulElementHandle) {
         li.setAttribute("class", "index-item");
         li.innerText = key;
         ulElementHandle.appendChild(li);
-        return ulElementHandle;
-        // console.log(key, items[key]);
     }
-    //     a = document.querySelector(".index-content")
-    // el= {"planet": "url1"}
-    // writeItemsToHTMLList(el, a)
+    return ulElementHandle;
 }
 exports.writeItemsToHTMLList = writeItemsToHTMLList;
+function renderIndexPage() {
+    reachAPI().then(function (data) {
+        var ulItem = document.querySelector(".index-content");
+        writeItemsToHTMLList(data, ulItem);
+    });
+}
+exports.renderIndexPage = renderIndexPage;

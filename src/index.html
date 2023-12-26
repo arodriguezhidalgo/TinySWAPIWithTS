@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Document</title>
-    
-</head>
-<body>
+    <!-- <script type="text/javascript" src="runner.js" defer></script> -->
+    <script type="module" src="./runner.js"></script>
+  </head>
+  <body>
+    <!-- Hacky solution so the JS code cender even when 
+    "exports is not defined".-->
+    <script>
+      var exports = {};
+    </script>
     <h1>SWAPI</h1>
     <h2 class="general">
-        <ul class="index-content"></ul>
+      <ul class="index-content"></ul>
     </h2>
-    <script src="index.js"></script>
-</body>
+    <!-- <script>
+    
+    </script> -->
+  </body>
 </html>
