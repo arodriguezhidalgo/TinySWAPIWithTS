@@ -38,12 +38,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderIndexPage = exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = void 0;
+var rootURL = "https://swapi.dev/api/";
 function reachAPI() {
     return __awaiter(this, void 0, void 0, function () {
         var response, movies;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, fetch("https://swapi.dev/api/")];
+                case 0: return [4 /*yield*/, fetch(rootURL)];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.json()];
@@ -63,12 +64,21 @@ function writeItemsToHTMLList(items, ulElementHandle) {
     // This function writes items from an Object to some HTML <ul> element.
     // Extract the keys in an array.
     var objectKeys = Object.keys(items);
-    // Iterate using the keys, and process each item.
-    for (var _i = 0, objectKeys_1 = objectKeys; _i < objectKeys_1.length; _i++) {
-        var key = objectKeys_1[_i];
+    var objectValues = Object.values(items);
+    /* Iterate using the keys, and process each item. This means that
+     we crate a list element for each item that contains a hyperlink
+     <a> field. Such hyperlink contains the key as its innerText,
+     and the url as the href attribute.*/
+    for (var i = 0; i < objectKeys.length; i++) {
+        // Create the list element.
         var li = document.createElement("li");
-        li.setAttribute("class", "index-item");
-        li.innerText = key;
+        // Create the hyperlink element, and set some of its attributes.
+        var a = document.createElement("a");
+        a.setAttribute("class", "index-item");
+        a.setAttribute("href", objectValues[i]);
+        a.innerText = objectKeys[i];
+        // Append the hyperlink to the list element.
+        li.appendChild(a);
         ulElementHandle.appendChild(li);
     }
     return ulElementHandle;
