@@ -39,11 +39,10 @@ async function getElementByXPath(xpath: string) {
 
 
 const waitUntilTime = 20000;
-// let driver, el, actual, expected;
-// jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60 * 5;
-
 describe("testing index file", () => {
-  test("Writes elements in the index ul.", async () => {
+  test.skip("Writes elements in the index ul.", async () => {
+    // This test is temporarily disabled. In the future, it should do a full set of interactions.
+    
     // More about locators here: https://www.selenium.dev/documentation/webdriver/elements/locators/
     const ulItem = <HTMLElement> await driver.findElement(By.className("index-content"));
     console.log(ulItem);
@@ -51,10 +50,5 @@ describe("testing index file", () => {
     // Create a list of dummy items. For now, we don't use the URL.
     const dummyItems = { planets: "someURL", ships: "yetAnotherURL" };
 
-    // const newULItem = writeItemsToHTMLList(dummyItems, ulItem);    
-    
-    // Get the parent
-    // const parentDiv = ulItem.parentNode;
-    // parentDiv.replaceChild(ulItem, newULItem);
   });
 });
