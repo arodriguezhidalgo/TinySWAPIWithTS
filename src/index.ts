@@ -15,8 +15,7 @@ export function writeItemsToHTMLList(
   ulElementHandle: HTMLElement
 ) : HTMLElement{
   // This function writes items from an Object to some HTML <ul> element.
-
-  
+ 
   // Extract the keys in an array.
   const objectKeys = Object.keys(items) as Array<keyof Object>;
 
@@ -26,9 +25,7 @@ export function writeItemsToHTMLList(
     li.setAttribute("class", "index-item");
     li.innerText = key;
 
-    ulElementHandle.appendChild(li);
-    
-    // console.log(key, items[key]);
+    ulElementHandle.appendChild(li);    
   }
 
   return <HTMLElement> ulElementHandle;
