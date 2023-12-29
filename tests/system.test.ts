@@ -1,6 +1,6 @@
 
 const { Builder, By, Key, until } = require("selenium-webdriver");
-import { reachAPI, writeItemsToHTMLList } from "../src/index";
+import { reachAPI, writeItemsToHTMLList } from "../src/js/index";
 import "selenium-webdriver/firefox";
 import "geckodriver";
 
