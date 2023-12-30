@@ -10,7 +10,7 @@ import {
 } from "../src/js/index";
 
 describe("Unit tests for function writeItemsToHTMLList.", () => {
-  test("Created items contain hyperlink elements <a> inside.", async () => {
+  test("Created items contain onclick function.", async () => {
     // Create a dummy ul element, to which we will add an li item.
     const dummyUL = document.createElement("ul");
 
@@ -24,7 +24,9 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     // Extract the created li item from the updated ul.
     const liElement = <HTMLElement>returnedUL.querySelector(".index-item");
 
-    expect(liElement.getAttribute("href")).toBe("someURL");
+    // Verify that the onclick function is not empty, which means that a 
+    // priori we managed to set a callback function.
+    expect(liElement.onclick).not.toBe(null);    
   });
 
   test("Renders mapped name, not field name provided by the API.", () => {
@@ -108,4 +110,26 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     nodeItem = <HTMLElement>liElements[2];
     expect(nodeItem).toBe(undefined);
   });
+
+  test('Can remove children from UL element.', ()=> {
+    const dummyUL = document.createElement("ul");
+
+    // Create two children LI for our UL element.
+      // Create a list of dummy items to add.
+      const dummyItems = {
+        planets: "planetURL",
+        people: "peopleURL",
+        starships: "starshipURL",
+      };
+
+    // Use the writeItemsToHTMLList to attach the children to a UL. 
+    // We don't care about the rest of features of such function, but
+    // only about the UL it returns.
+    const returnedUL = writeItemsToHTMLList(dummyItems, dummyUL);
+
+    // Assert that such UL contains three children.
+    expect(dummyUL.children.length).toBe(3);
+
+  });
+  
 });

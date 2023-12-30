@@ -41,10 +41,10 @@ export function writeItemsToHTMLList(
     // Create the hyperlink element, and set some of its attributes.
     const a = document.createElement("a");
     a.setAttribute("class", "index-item");
-    // a.setAttribute("href", objectValues[i]);
-    // a.addEventListener("click", () => reachAPI(objectValues[i]));
-    a.onclick = async () => {
-      console.log("STARTING", objectValues[i])
+    // Add a listener for "click". In our case, whenever a section is
+    // clicked we want to render its content in the same index-content 
+    // UL element.
+    a.onclick = async () => {      
       const newItems = await reachAPI(objectValues[i]);
       console.log(newItems);
     };
@@ -68,4 +68,16 @@ export function renderIndexPage() {
     const ulItem = <HTMLElement>document.querySelector(".index-content");
     writeItemsToHTMLList(data, ulItem);
   });
+}
+
+export function clearLIElementsFromPage() {
+  // We need a function that removes LI Element from the index-content 
+  // UL Element. This is because we are implementing a single page app.
+
+  // First, we grab the UL element.
+  const ulElement = document.querySelector(".index-content");
+
+  // Then, get all the children
+  console.log(ulElement);
+  // Then, iterate to remove i
 }
