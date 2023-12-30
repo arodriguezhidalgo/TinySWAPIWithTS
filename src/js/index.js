@@ -47,12 +47,12 @@ exports.INDEX_SECTIONS_MAPPING = {
     vehicles: "Vehicles",
     starships: "Starships",
 };
-function reachAPI() {
+function reachAPI(url) {
     return __awaiter(this, void 0, void 0, function () {
         var response, movies;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, fetch(rootURL)];
+                case 0: return [4 /*yield*/, fetch(url)];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.json()];
@@ -70,31 +70,52 @@ function getHTMLListByID(id) {
 exports.getHTMLListByID = getHTMLListByID;
 function writeItemsToHTMLList(items, ulElementHandle) {
     // This function writes items from an Object to some HTML <ul> element.
+    var _this = this;
     // Extract the keys in an array.
     var objectKeys = Object.keys(items);
     var objectValues = Object.values(items);
-    /* Iterate using the keys, and process each item. This means that
-     we crate a list element for each item that contains a hyperlink
-     <a> field. Such hyperlink contains the key as its innerText,
-     and the url as the href attribute.*/
-    for (var i = 0; i < objectKeys.length; i++) {
+    var _loop_1 = function (i) {
         // Create the list element.
         var li = document.createElement("li");
         // Create the hyperlink element, and set some of its attributes.
         var a = document.createElement("a");
         a.setAttribute("class", "index-item");
-        a.setAttribute("href", objectValues[i]);
-        // Set the text to the mapping we created in this file. This is so the text makes more sense.    
-        a.innerText = exports.INDEX_SECTIONS_MAPPING[objectKeys[i]].toString();
-        // Append the hyperlink to the list element.
-        li.appendChild(a);
-        ulElementHandle.appendChild(li);
+        // a.setAttribute("href", objectValues[i]);
+        // a.addEventListener("click", () => reachAPI(objectValues[i]));
+        a.onclick = function () { return __awaiter(_this, void 0, void 0, function () {
+            var newItems;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log("STARTING", objectValues[i]);
+                        return [4 /*yield*/, reachAPI(objectValues[i])];
+                    case 1:
+                        newItems = _a.sent();
+                        console.log(newItems);
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        // Set the text to the mapping we created in this file. This is so the text makes more sense.
+        if (exports.INDEX_SECTIONS_MAPPING[objectKeys[i]] !== undefined) {
+            a.innerText = exports.INDEX_SECTIONS_MAPPING[objectKeys[i]].toString();
+            // Append the hyperlink to the list element.
+            li.appendChild(a);
+            ulElementHandle.appendChild(li);
+        }
+    };
+    /* Iterate using the keys, and process each item. This means that
+     we crate a list element for each item that contains a hyperlink
+     <a> field. Such hyperlink contains the key as its innerText,
+     and the url as the href attribute.*/
+    for (var i = 0; i < objectKeys.length; i++) {
+        _loop_1(i);
     }
     return ulElementHandle;
 }
 exports.writeItemsToHTMLList = writeItemsToHTMLList;
 function renderIndexPage() {
-    reachAPI().then(function (data) {
+    reachAPI(rootURL).then(function (data) {
         var ulItem = document.querySelector(".index-content");
         writeItemsToHTMLList(data, ulItem);
     });

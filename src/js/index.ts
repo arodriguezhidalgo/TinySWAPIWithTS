@@ -41,7 +41,13 @@ export function writeItemsToHTMLList(
     // Create the hyperlink element, and set some of its attributes.
     const a = document.createElement("a");
     a.setAttribute("class", "index-item");
-    a.setAttribute("href", objectValues[i]);
+    // a.setAttribute("href", objectValues[i]);
+    // a.addEventListener("click", () => reachAPI(objectValues[i]));
+    a.onclick = async () => {
+      console.log("STARTING", objectValues[i])
+      const newItems = await reachAPI(objectValues[i]);
+      console.log(newItems);
+    };
 
     // Set the text to the mapping we created in this file. This is so the text makes more sense.
     if (INDEX_SECTIONS_MAPPING[objectKeys[i]] !== undefined) {
