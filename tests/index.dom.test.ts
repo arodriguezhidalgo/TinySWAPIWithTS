@@ -7,6 +7,7 @@ import {
   reachAPI,
   writeItemsToHTMLList,
   INDEX_SECTIONS_MAPPING,
+  clearLIElementsFromElement,
 } from "../src/js/index";
 
 describe("Unit tests for function writeItemsToHTMLList.", () => {
@@ -19,14 +20,14 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyItems = { species: "someURL" };
 
     // Run the specimen function.
-    const returnedUL = writeItemsToHTMLList(dummyItems, dummyUL);
+    writeItemsToHTMLList(dummyItems, dummyUL);
 
     // Extract the created li item from the updated ul.
-    const liElement = <HTMLElement>returnedUL.querySelector(".index-item");
+    const liElement = <HTMLElement>dummyUL.querySelector(".index-item");
 
-    // Verify that the onclick function is not empty, which means that a 
+    // Verify that the onclick function is not empty, which means that a
     // priori we managed to set a callback function.
-    expect(liElement.onclick).not.toBe(null);    
+    expect(liElement.onclick).not.toBe(null);
   });
 
   test("Renders mapped name, not field name provided by the API.", () => {
@@ -37,10 +38,10 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyItems = { planets: "someURL" };
 
     // Run the specimen function.
-    const returnedUL = writeItemsToHTMLList(dummyItems, dummyUL);
+    writeItemsToHTMLList(dummyItems, dummyUL);
 
     // Extract the created li item from the updated ul.
-    const liElement = <HTMLElement>returnedUL.querySelector(".index-item");
+    const liElement = <HTMLElement>dummyUL.querySelector(".index-item");
 
     expect(liElement.innerText).toBe("Planets");
   });
@@ -53,11 +54,11 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyItems = { planets: "someURL", starships: "yetAnotherURL" };
 
     // Run the specimen function.
-    const returnedUL = writeItemsToHTMLList(dummyItems, dummyUL);
+    writeItemsToHTMLList(dummyItems, dummyUL);
 
     // Extract the created li items from the updated ul. Notice that
     // querySelectorAll returns a NodeList, as opposed HTMLElement.
-    const liElements = returnedUL.querySelectorAll(".index-item");
+    const liElements = dummyUL.querySelectorAll(".index-item");
 
     // We extract the first node and cast it to HTMLElement. Otherwise,
     // TS doesn't want to extract its innerText (it thinks it's of
@@ -84,11 +85,11 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     };
 
     // Run the specimen function.
-    const returnedUL = writeItemsToHTMLList(dummyItems, dummyUL);
+    writeItemsToHTMLList(dummyItems, dummyUL);
 
     // Extract the created li items from the updated ul. Notice that
     // querySelectorAll returns a NodeList, as opposed HTMLElement.
-    const liElements = returnedUL.querySelectorAll(".index-item");
+    const liElements = dummyUL.querySelectorAll(".index-item");
 
     // We extract the first node and cast it to HTMLElement. Otherwise,
     // TS doesn't want to extract its innerText (it thinks it's of
@@ -111,25 +112,30 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     expect(nodeItem).toBe(undefined);
   });
 
-  test('Can remove children from UL element.', ()=> {
+  test("Can remove children from UL element.", () => {
     const dummyUL = document.createElement("ul");
 
     // Create two children LI for our UL element.
-      // Create a list of dummy items to add.
-      const dummyItems = {
-        planets: "planetURL",
-        people: "peopleURL",
-        starships: "starshipURL",
-      };
+    // Create a list of dummy items to add.
+    const dummyItems = {
+      planets: "planetURL",
+      people: "peopleURL",
+      starships: "starshipURL",
+    };
 
-    // Use the writeItemsToHTMLList to attach the children to a UL. 
+    // Use the writeItemsToHTMLList to attach the children to a UL.
     // We don't care about the rest of features of such function, but
     // only about the UL it returns.
-    const returnedUL = writeItemsToHTMLList(dummyItems, dummyUL);
+    writeItemsToHTMLList(dummyItems, dummyUL);
 
     // Assert that such UL contains three children.
     expect(dummyUL.children.length).toBe(3);
 
+    // Now, run the specimen function to remove children from the UL element.
+    clearLIElementsFromElement(dummyUL);
+
+    // Verify that after running the specimen function, there are no elements
+    // left in the ul.
+    expect(dummyUL.children.length).toBe(0);
   });
-  
 });

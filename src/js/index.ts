@@ -23,8 +23,10 @@ export function getHTMLListByID(id: string): HTMLElement {
 export function writeItemsToHTMLList(
   items: Object,
   ulElementHandle: HTMLElement
-): HTMLElement {
+) {
   // This function writes items from an Object to some HTML <ul> element.
+
+  const newUlElementHandle= {...ulElementHandle};
 
   // Extract the keys in an array.
   const objectKeys = Object.keys(items) as Array<keyof Object>;
@@ -42,9 +44,9 @@ export function writeItemsToHTMLList(
     const a = document.createElement("a");
     a.setAttribute("class", "index-item");
     // Add a listener for "click". In our case, whenever a section is
-    // clicked we want to render its content in the same index-content 
+    // clicked we want to render its content in the same index-content
     // UL element.
-    a.onclick = async () => {      
+    a.onclick = async () => {
       const newItems = await reachAPI(objectValues[i]);
       console.log(newItems);
     };
@@ -58,9 +60,8 @@ export function writeItemsToHTMLList(
 
       ulElementHandle.appendChild(li);
     }
-  }
-
-  return <HTMLElement>ulElementHandle;
+ }
+  
 }
 
 export function renderIndexPage() {
@@ -70,14 +71,12 @@ export function renderIndexPage() {
   });
 }
 
-export function clearLIElementsFromPage() {
-  // We need a function that removes LI Element from the index-content 
+export function clearLIElementsFromElement(ulElement : HTMLElement) {
+  // We need a function that removes LI Element from the index-content
   // UL Element. This is because we are implementing a single page app.
 
-  // First, we grab the UL element.
-  const ulElement = document.querySelector(".index-content");
-
-  // Then, get all the children
-  console.log(ulElement);
-  // Then, iterate to remove i
+  // Iterate to remove all the children.
+  while (ulElement.firstChild) {
+    ulElement.removeChild(ulElement.firstChild);
+  }
 }
