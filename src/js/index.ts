@@ -10,8 +10,8 @@ export const INDEX_SECTIONS_MAPPING: Object = {
   starships: "Starships",
 };
 
-export async function reachAPI() {
-  const response = await fetch(rootURL);
+export async function reachAPI(url: string) {
+  const response = await fetch(url);
   const movies = await response.json();
   return movies;
 }
@@ -58,7 +58,7 @@ export function writeItemsToHTMLList(
 }
 
 export function renderIndexPage() {
-  reachAPI().then((data) => {
+  reachAPI(rootURL).then((data) => {
     const ulItem = <HTMLElement>document.querySelector(".index-content");
     writeItemsToHTMLList(data, ulItem);
   });
