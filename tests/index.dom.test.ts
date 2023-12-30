@@ -138,4 +138,6 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     // left in the ul.
     expect(dummyUL.children.length).toBe(0);
   });
+
+  test.skip("Tests for renderPageByURL()", () => {});
 });

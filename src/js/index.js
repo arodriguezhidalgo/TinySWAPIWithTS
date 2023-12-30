@@ -1,5 +1,16 @@
 "use strict";
 // import { WebElement } from "selenium-webdriver/lib/webdriver";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.renderIndexPage = exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = exports.INDEX_SECTIONS_MAPPING = void 0;
+exports.clearLIElementsFromElement = exports.renderPageByURL = exports.renderIndexPage = exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = exports.INDEX_SECTIONS_MAPPING = void 0;
 var rootURL = "https://swapi.dev/api/";
 exports.INDEX_SECTIONS_MAPPING = {
     people: "People",
@@ -71,6 +82,7 @@ exports.getHTMLListByID = getHTMLListByID;
 function writeItemsToHTMLList(items, ulElementHandle) {
     // This function writes items from an Object to some HTML <ul> element.
     var _this = this;
+    var newUlElementHandle = __assign({}, ulElementHandle);
     // Extract the keys in an array.
     var objectKeys = Object.keys(items);
     var objectValues = Object.values(items);
@@ -80,15 +92,14 @@ function writeItemsToHTMLList(items, ulElementHandle) {
         // Create the hyperlink element, and set some of its attributes.
         var a = document.createElement("a");
         a.setAttribute("class", "index-item");
-        // a.setAttribute("href", objectValues[i]);
-        // a.addEventListener("click", () => reachAPI(objectValues[i]));
+        // Add a listener for "click". In our case, whenever a section is
+        // clicked we want to render its content in the same index-content
+        // UL element.
         a.onclick = function () { return __awaiter(_this, void 0, void 0, function () {
             var newItems;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log("STARTING", objectValues[i]);
-                        return [4 /*yield*/, reachAPI(objectValues[i])];
+                    case 0: return [4 /*yield*/, renderPageByURL(objectValues[i])];
                     case 1:
                         newItems = _a.sent();
                         console.log(newItems);
@@ -111,7 +122,6 @@ function writeItemsToHTMLList(items, ulElementHandle) {
     for (var i = 0; i < objectKeys.length; i++) {
         _loop_1(i);
     }
-    return ulElementHandle;
 }
 exports.writeItemsToHTMLList = writeItemsToHTMLList;
 function renderIndexPage() {
@@ -121,3 +131,26 @@ function renderIndexPage() {
     });
 }
 exports.renderIndexPage = renderIndexPage;
+function renderPageByURL(url) {
+    reachAPI(url).then(function (data) {
+        // First, get the UL element handle.
+        var ulItem = document.querySelector(".index-content");
+        console.log(ulItem.children);
+        // Then, clear the UL element from any children it may contain.
+        clearLIElementsFromElement(ulItem);
+        // Then, write data to the UL element.
+        console.log(ulItem.children, data);
+        writeItemsToHTMLList(data, ulItem);
+        console.log(ulItem.children);
+    });
+}
+exports.renderPageByURL = renderPageByURL;
+function clearLIElementsFromElement(ulElement) {
+    // We need a function that removes LI Element from the index-content
+    // UL Element. This is because we are implementing a single page app.
+    // Iterate to remove all the children.
+    while (ulElement.firstChild) {
+        ulElement.removeChild(ulElement.firstChild);
+    }
+}
+exports.clearLIElementsFromElement = clearLIElementsFromElement;

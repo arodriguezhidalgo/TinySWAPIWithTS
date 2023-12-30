@@ -47,7 +47,7 @@ export function writeItemsToHTMLList(
     // clicked we want to render its content in the same index-content
     // UL element.
     a.onclick = async () => {
-      const newItems = await reachAPI(objectValues[i]);
+      const newItems = await renderPageByURL(objectValues[i]);
       console.log(newItems);
     };
 
@@ -60,14 +60,28 @@ export function writeItemsToHTMLList(
 
       ulElementHandle.appendChild(li);
     }
- }
-  
+ }  
 }
 
 export function renderIndexPage() {
   reachAPI(rootURL).then((data) => {
     const ulItem = <HTMLElement>document.querySelector(".index-content");
     writeItemsToHTMLList(data, ulItem);
+  });
+}
+
+export function renderPageByURL(url: string) {
+  reachAPI(url).then((data) => {
+    // First, get the UL element handle.
+    const ulItem = <HTMLElement>document.querySelector(".index-content");
+    console.log(ulItem.children)
+    // Then, clear the UL element from any children it may contain.
+    clearLIElementsFromElement(ulItem);
+
+    // Then, write data to the UL element.
+    console.log(ulItem.children, data)
+    writeItemsToHTMLList(data, ulItem);
+    console.log(ulItem.children)
   });
 }
 
