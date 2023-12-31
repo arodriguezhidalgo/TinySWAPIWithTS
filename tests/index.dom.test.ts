@@ -6,7 +6,7 @@
 import {
   reachAPI,
   writeItemsToHTMLList,
-  INDEX_SECTIONS_MAPPING,
+  IndexItemProcessor,
   clearLIElementsFromElement,
 } from "../src/js/index";
 
@@ -20,7 +20,8 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyItems = { species: "someURL" };
 
     // Run the specimen function.
-    writeItemsToHTMLList(dummyItems, dummyUL);
+    const processor = new IndexItemProcessor();
+    writeItemsToHTMLList(dummyItems, dummyUL, processor);
 
     // Extract the created li item from the updated ul.
     const liElement = <HTMLElement>dummyUL.querySelector(".index-item");
@@ -38,7 +39,8 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyItems = { planets: "someURL" };
 
     // Run the specimen function.
-    writeItemsToHTMLList(dummyItems, dummyUL);
+    const processor = new IndexItemProcessor();
+    writeItemsToHTMLList(dummyItems, dummyUL, processor);
 
     // Extract the created li item from the updated ul.
     const liElement = <HTMLElement>dummyUL.querySelector(".index-item");
@@ -54,7 +56,8 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyItems = { planets: "someURL", starships: "yetAnotherURL" };
 
     // Run the specimen function.
-    writeItemsToHTMLList(dummyItems, dummyUL);
+    const processor = new IndexItemProcessor();
+    writeItemsToHTMLList(dummyItems, dummyUL, processor);
 
     // Extract the created li items from the updated ul. Notice that
     // querySelectorAll returns a NodeList, as opposed HTMLElement.
@@ -78,14 +81,15 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyUL = document.createElement("ul");
 
     // Create a list of dummy items to add.
-    const dummyItems = {
+    const dummyItems : Object = {
       planets: "someURL",
       dummy: "yetAnotherURL",
       starships: "url3",
     };
 
     // Run the specimen function.
-    writeItemsToHTMLList(dummyItems, dummyUL);
+    const processor = new IndexItemProcessor();
+    writeItemsToHTMLList(dummyItems, dummyUL, processor);
 
     // Extract the created li items from the updated ul. Notice that
     // querySelectorAll returns a NodeList, as opposed HTMLElement.
@@ -126,7 +130,8 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     // Use the writeItemsToHTMLList to attach the children to a UL.
     // We don't care about the rest of features of such function, but
     // only about the UL it returns.
-    writeItemsToHTMLList(dummyItems, dummyUL);
+    const processor = new IndexItemProcessor();
+    writeItemsToHTMLList(dummyItems, dummyUL, processor);
 
     // Assert that such UL contains three children.
     expect(dummyUL.children.length).toBe(3);

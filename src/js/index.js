@@ -83,6 +83,7 @@ function writeItemsToHTMLList(items, ulElementHandle) {
     // This function writes items from an Object to some HTML <ul> element.
     var _this = this;
     var newUlElementHandle = __assign({}, ulElementHandle);
+    console.log(items);
     // Extract the keys in an array.
     var objectKeys = Object.keys(items);
     var objectValues = Object.values(items);
