@@ -22,7 +22,7 @@ export function getHTMLListByID(id: string): HTMLElement {
 
 export function writeItemsToHTMLList(
   items: Object,
-  ulElementHandle: HTMLElement, 
+  ulElementHandle: HTMLElement,
   processor: ItemProcessor
 ) {
   // This function writes items from an Object to some HTML <ul> element.
@@ -38,8 +38,8 @@ export function writeItemsToHTMLList(
    <a> field. Such hyperlink contains the key as its innerText, 
    and the url as the href attribute.*/
   for (let i: number = 0; i < objectKeys.length; i++) {
-    const objectKey : string = objectKeys[i];
-    const objectValue : Object = objectValues[i];
+    const objectKey: string = objectKeys[i];
+    const objectValue: Object = objectValues[i];
     processor.createChild(objectKey, objectValue, ulElementHandle);
   }
 }
@@ -52,21 +52,21 @@ export function renderIndexPage() {
   });
 }
 
-// export function renderPageByURL(url: Object) {
-//   reachAPI(url).then((data) => {
-//     // First, get the UL element handle.
-//     const ulItem = <HTMLElement>document.querySelector(".index-content");
-//     console.log(ulItem.children);
-//     // Then, clear the UL element from any children it may contain.
-//     clearLIElementsFromElement(ulItem);
+export function renderPageByURL(url: string) {
+  reachAPI(url).then((data) => {
+    // First, get the UL element handle.
+    const ulItem = <HTMLElement>document.querySelector(".index-content");
+    console.log(ulItem.children);
+    // Then, clear the UL element from any children it may contain.
+    clearLIElementsFromElement(ulItem);
 
-//     const processor = new IndexItemProcessor();
-//     // Then, write data to the UL element.
-//     console.log(ulItem.children, data);
-//     writeItemsToHTMLList(data, ulItem, processor);
-//     console.log(ulItem.children);
-//   });
-// }
+    const processor = new IndexItemProcessor();
+    // Then, write data to the UL element.
+    console.log(ulItem.children, data);
+    writeItemsToHTMLList(data, ulItem, processor);
+    console.log(ulItem.children);
+  });
+}
 
 export function clearLIElementsFromElement(ulElement: HTMLElement) {
   // We need a function that removes LI Element from the index-content
@@ -79,12 +79,14 @@ export function clearLIElementsFromElement(ulElement: HTMLElement) {
 }
 
 abstract class ItemProcessor {
-  abstract createChild( objectKey: string,
+  abstract createChild(
+    objectKey: string,
     objectValues: Object,
-    parentHandle: HTMLElement) : void;
+    parentHandle: HTMLElement
+  ): void;
 }
 
-export class IndexItemProcessor extends ItemProcessor{
+export class IndexItemProcessor extends ItemProcessor {
   private INDEX_SECTIONS_MAPPING: Object = {
     people: "People",
     planets: "Planets",
@@ -99,23 +101,24 @@ export class IndexItemProcessor extends ItemProcessor{
     objectValue: Object,
     parentHandle: HTMLElement
   ) {
-    // Create the list element.
-    const li = document.createElement("li");
+    const sectionName: Object = this.INDEX_SECTIONS_MAPPING[objectKey];
+    if (sectionName !== undefined) {
+      // Create the list element.
+      const li = document.createElement("li");
 
-    // Create the hyperlink element, and set some of its attributes.
-    const a = document.createElement("a");
-    a.setAttribute("class", "index-item");
-    // Add a listener for "click". In our case, whenever a section is
-    // clicked we want to render its content in the same index-content
-    // UL element.
-    // a.onclick = async () => {
-    //   const newItems = await renderPageByURL(objectValue);
-    //   console.log(newItems);
-    // };
+      // Create the hyperlink element, and set some of its attributes.
+      const a = document.createElement("a");
+      a.setAttribute("class", "index-item");
+      // Add a listener for "click". In our case, whenever a section is
+      // clicked we want to render its content in the same index-content
+      // UL element.
+      a.onclick = async () => {
+        const newItems = await renderPageByURL(objectValue.toString());
+        console.log(newItems);
+      };
 
-    // Set the text to the mapping we created in this file. This is so the text makes more sense.
-    const sectionName : Object= this.INDEX_SECTIONS_MAPPING[objectKey];
-    if ( sectionName !== undefined) {
+      // Set the text to the mapping we created in this file. This is so the text makes more sense.
+
       a.innerText = sectionName.toString();
 
       // Append the hyperlink to the list element.
