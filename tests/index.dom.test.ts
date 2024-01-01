@@ -7,7 +7,9 @@ import {
   reachAPI,
   writeItemsToHTMLList,
   IndexItemProcessor,
+  ItemProcessor,
   clearLIElementsFromElement,
+  renderPageByURL,
 } from "../src/js/index";
 
 describe("Unit tests for function writeItemsToHTMLList.", () => {
@@ -81,7 +83,7 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     const dummyUL = document.createElement("ul");
 
     // Create a list of dummy items to add.
-    const dummyItems : Object = {
+    const dummyItems: Object = {
       planets: "someURL",
       dummy: "yetAnotherURL",
       starships: "url3",
@@ -144,5 +146,60 @@ describe("Unit tests for function writeItemsToHTMLList.", () => {
     expect(dummyUL.children.length).toBe(0);
   });
 
-  test.skip("Tests for renderPageByURL()", () => {});
+  test.skip("Tests for renderPageByURL()", () => {
+    // This needs a system test, because we cannot mock the reachAPI
+    // function, at least for now.
+  });
+});
+
+describe("Tests for IndexItemProcessor", () => {
+  let specimen: IndexItemProcessor;
+
+  test("Implements ItemProcessor", () => {
+    expect(specimen).toBeInstanceOf(ItemProcessor);
+  });
+
+  test("Creates child on demand", () => {
+    const parentHandle = document.createElement("ul");
+
+    const dictionary = {
+      people: "peopleURL",
+    };
+
+    const objectKey = <keyof Object>Object.keys(dictionary)[0];
+    specimen.createChild(objectKey, Object.values(dictionary), parentHandle);
+
+    // The parent handle should contain a single child
+    expect(parentHandle.children.length).toBe(1);
+
+    // The child should have innerText People, which exists in our entries dictionary
+    // for the index page.
+    const liElement = <HTMLElement>parentHandle.querySelector(".index-item");
+    expect(liElement.innerText).toBe("People");
+
+    // Verify that the onclick function is not empty for the child element.
+    // This is the function that will render the items of the subpage.
+    expect(liElement.onclick).not.toBe(null);
+  });
+
+  test("Doesn't create a child if Key doesn't exist in INDEX_SECTIONS_MAPPING", () => {
+    const parentHandle = document.createElement("ul");
+
+    // Add three elements: two valid and a single invalid one.
+    const dictionary = {      
+      dummy: "dummyURL",      
+    };
+
+    const objectKey = <keyof Object>Object.keys(dictionary)[0];
+    specimen.createChild(objectKey, Object.values(dictionary), parentHandle);
+
+    // Given that dummy is not part of the INDEX_SECTIONS_MAPPING property, the 
+    // parent handle should have no children.
+    expect(parentHandle.children.length).toBe(0);
+  });
+
+  beforeEach(() => {
+    // Reset the specimen before every test case.
+    specimen = new IndexItemProcessor();
+  });
 });

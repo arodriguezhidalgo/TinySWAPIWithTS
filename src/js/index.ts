@@ -27,8 +27,7 @@ export function writeItemsToHTMLList(
 ) {
   // This function writes items from an Object to some HTML <ul> element.
 
-  const newUlElementHandle = { ...ulElementHandle };
-  console.log(items);
+  const newUlElementHandle = { ...ulElementHandle };  
   // Extract the keys in an array.
   const objectKeys = Object.keys(items) as Array<keyof Object>;
   const objectValues = Object.values(items) as Array<Object>;
@@ -56,15 +55,15 @@ export function renderPageByURL(url: string) {
   reachAPI(url).then((data) => {
     // First, get the UL element handle.
     const ulItem = <HTMLElement>document.querySelector(".index-content");
-    console.log(ulItem.children);
+    
     // Then, clear the UL element from any children it may contain.
     clearLIElementsFromElement(ulItem);
 
     const processor = new IndexItemProcessor();
     // Then, write data to the UL element.
-    console.log(ulItem.children, data);
+    // console.log(ulItem.children, data);
     writeItemsToHTMLList(data, ulItem, processor);
-    console.log(ulItem.children);
+    // console.log(ulItem.children);
   });
 }
 
@@ -78,7 +77,10 @@ export function clearLIElementsFromElement(ulElement: HTMLElement) {
   }
 }
 
-abstract class ItemProcessor {
+export abstract class ItemProcessor {
+  /* This class is used to create children using for a specified
+  parent handle.
+  */
   abstract createChild(
     objectKey: string,
     objectValues: Object,
@@ -112,9 +114,9 @@ export class IndexItemProcessor extends ItemProcessor {
       // Add a listener for "click". In our case, whenever a section is
       // clicked we want to render its content in the same index-content
       // UL element.
-      a.onclick = async () => {
-        const newItems = await renderPageByURL(objectValue.toString());
-        console.log(newItems);
+      a.onclick = () => {
+        const newItems = renderPageByURL(objectValue.toString());
+        // console.log(newItems);
       };
 
       // Set the text to the mapping we created in this file. This is so the text makes more sense.
