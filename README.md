@@ -11,3 +11,4 @@ This is a small project to have some fun while covering the following topics:
 Things that I haven't covered yet but it would be cool to do
 * Packaging using Vite.
 * Implement some proper CSS for this.
+* Start using React.js.
