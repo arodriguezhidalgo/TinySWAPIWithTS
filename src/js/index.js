@@ -1,5 +1,20 @@
 "use strict";
 // import { WebElement } from "selenium-webdriver/lib/webdriver";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -48,16 +63,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearLIElementsFromElement = exports.renderPageByURL = exports.renderIndexPage = exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = exports.INDEX_SECTIONS_MAPPING = void 0;
+exports.ChildrenItemProcessor = exports.IndexItemProcessor = exports.ItemProcessor = exports.clearLIElementsFromElement = exports.renderPageByURL = exports.renderIndexPage = exports.writeItemsToHTMLList = exports.getHTMLListByID = exports.reachAPI = void 0;
 var rootURL = "https://swapi.dev/api/";
-exports.INDEX_SECTIONS_MAPPING = {
-    people: "People",
-    planets: "Planets",
-    films: "Films",
-    species: "Species",
-    vehicles: "Vehicles",
-    starships: "Starships",
-};
 function reachAPI(url) {
     return __awaiter(this, void 0, void 0, function () {
         var response, movies;
@@ -79,56 +86,28 @@ function getHTMLListByID(id) {
     return document.querySelector(id);
 }
 exports.getHTMLListByID = getHTMLListByID;
-function writeItemsToHTMLList(items, ulElementHandle) {
+function writeItemsToHTMLList(items, ulElementHandle, processor) {
     // This function writes items from an Object to some HTML <ul> element.
-    var _this = this;
     var newUlElementHandle = __assign({}, ulElementHandle);
-    console.log(items);
     // Extract the keys in an array.
     var objectKeys = Object.keys(items);
     var objectValues = Object.values(items);
-    var _loop_1 = function (i) {
-        // Create the list element.
-        var li = document.createElement("li");
-        // Create the hyperlink element, and set some of its attributes.
-        var a = document.createElement("a");
-        a.setAttribute("class", "index-item");
-        // Add a listener for "click". In our case, whenever a section is
-        // clicked we want to render its content in the same index-content
-        // UL element.
-        a.onclick = function () { return __awaiter(_this, void 0, void 0, function () {
-            var newItems;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, renderPageByURL(objectValues[i])];
-                    case 1:
-                        newItems = _a.sent();
-                        console.log(newItems);
-                        return [2 /*return*/];
-                }
-            });
-        }); };
-        // Set the text to the mapping we created in this file. This is so the text makes more sense.
-        if (exports.INDEX_SECTIONS_MAPPING[objectKeys[i]] !== undefined) {
-            a.innerText = exports.INDEX_SECTIONS_MAPPING[objectKeys[i]].toString();
-            // Append the hyperlink to the list element.
-            li.appendChild(a);
-            ulElementHandle.appendChild(li);
-        }
-    };
     /* Iterate using the keys, and process each item. This means that
      we crate a list element for each item that contains a hyperlink
      <a> field. Such hyperlink contains the key as its innerText,
      and the url as the href attribute.*/
     for (var i = 0; i < objectKeys.length; i++) {
-        _loop_1(i);
+        var objectKey = objectKeys[i];
+        var objectValue = objectValues[i];
+        processor.createChild(objectKey, objectValue, ulElementHandle);
     }
 }
 exports.writeItemsToHTMLList = writeItemsToHTMLList;
 function renderIndexPage() {
     reachAPI(rootURL).then(function (data) {
         var ulItem = document.querySelector(".index-content");
-        writeItemsToHTMLList(data, ulItem);
+        var processor = new IndexItemProcessor();
+        writeItemsToHTMLList(data, ulItem, processor);
     });
 }
 exports.renderIndexPage = renderIndexPage;
@@ -136,13 +115,18 @@ function renderPageByURL(url) {
     reachAPI(url).then(function (data) {
         // First, get the UL element handle.
         var ulItem = document.querySelector(".index-content");
-        console.log(ulItem.children);
         // Then, clear the UL element from any children it may contain.
         clearLIElementsFromElement(ulItem);
-        // Then, write data to the UL element.
-        console.log(ulItem.children, data);
-        writeItemsToHTMLList(data, ulItem);
-        console.log(ulItem.children);
+        // From data, we extract the URLs of the previous and next pages. This 
+        // will useful for navigation purposes.
+        var nextPage = data["next"];
+        var previousPage = data["previous"];
+        // Then, we extract the actual data that we will render in our page 
+        // (aka results).
+        var results = data["results"];
+        var processor = new ChildrenItemProcessor();
+        // Then, write results to the UL element.
+        writeItemsToHTMLList(results, ulItem, processor);
     });
 }
 exports.renderPageByURL = renderPageByURL;
@@ -155,3 +139,77 @@ function clearLIElementsFromElement(ulElement) {
     }
 }
 exports.clearLIElementsFromElement = clearLIElementsFromElement;
+var ItemProcessor = /** @class */ (function () {
+    function ItemProcessor() {
+    }
+    return ItemProcessor;
+}());
+exports.ItemProcessor = ItemProcessor;
+var IndexItemProcessor = /** @class */ (function (_super) {
+    __extends(IndexItemProcessor, _super);
+    function IndexItemProcessor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.INDEX_SECTIONS_MAPPING = {
+            people: "People",
+            planets: "Planets",
+            films: "Films",
+            species: "Species",
+            vehicles: "Vehicles",
+            starships: "Starships",
+        };
+        return _this;
+    }
+    IndexItemProcessor.prototype.createChild = function (objectKey, objectValue, parentHandle) {
+        var sectionName = this.INDEX_SECTIONS_MAPPING[objectKey];
+        if (sectionName !== undefined) {
+            // Create the list element.
+            var li = document.createElement("li");
+            // Create the hyperlink element, and set some of its attributes.
+            var a = document.createElement("a");
+            a.setAttribute("class", "index-item");
+            // Add a listener for "click". In our case, whenever a section is
+            // clicked we want to render its content in the same index-content
+            // UL element.
+            a.onclick = function () {
+                var newItems = renderPageByURL(objectValue.toString());
+            };
+            // Set the text to the mapping we created in this file. This is so the text makes more sense.
+            a.innerText = sectionName.toString();
+            // Append the hyperlink to the list element.
+            li.appendChild(a);
+            parentHandle.appendChild(li);
+        }
+    };
+    return IndexItemProcessor;
+}(ItemProcessor));
+exports.IndexItemProcessor = IndexItemProcessor;
+var ChildrenItemProcessor = /** @class */ (function (_super) {
+    __extends(ChildrenItemProcessor, _super);
+    function ChildrenItemProcessor() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /* This class is used to create children using for a specified
+    parent handle.
+    */
+    ChildrenItemProcessor.prototype.createChild = function (objectKey, objectValue, parentHandle) {
+        // In the case of children, we don't filter any element in order to render the right names
+        // using a dictionary. Instead, we just grab the items and render their .name property.
+        console.log(Object.values(objectValue), typeof (objectValue));
+        // Create the list element.
+        var li = document.createElement("li");
+        // Create the hyperlink element, and set some of its attributes.
+        var a = document.createElement("a");
+        a.setAttribute("class", "index-item");
+        // Retrieve the name, and use it as the innerText of the <a> element.
+        // Notice that we create a key object in order to extract it's value from the object.
+        var nameKey = "name";
+        a.innerText = objectValue[nameKey].toString();
+        // Set the text to the mapping we created in this file. This is so the text makes more sense.
+        a.innerText = objectValue[nameKey].toString();
+        // Append the hyperlink to the list element.
+        li.appendChild(a);
+        parentHandle.appendChild(li);
+    };
+    return ChildrenItemProcessor;
+}(ItemProcessor));
+exports.ChildrenItemProcessor = ChildrenItemProcessor;

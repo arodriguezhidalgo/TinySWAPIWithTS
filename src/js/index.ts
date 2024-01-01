@@ -1,14 +1,6 @@
 // import { WebElement } from "selenium-webdriver/lib/webdriver";
 
 const rootURL: string = "https://swapi.dev/api/";
-// export const INDEX_SECTIONS_MAPPING: Object = {
-//   people: "People",
-//   planets: "Planets",
-//   films: "Films",
-//   species: "Species",
-//   vehicles: "Vehicles",
-//   starships: "Starships",
-// };
 
 export async function reachAPI(url: string) {
   const response = await fetch(url);
@@ -27,7 +19,7 @@ export function writeItemsToHTMLList(
 ) {
   // This function writes items from an Object to some HTML <ul> element.
 
-  const newUlElementHandle = { ...ulElementHandle };  
+  const newUlElementHandle = { ...ulElementHandle };
   // Extract the keys in an array.
   const objectKeys = Object.keys(items) as Array<keyof Object>;
   const objectValues = Object.values(items) as Array<Object>;
@@ -55,15 +47,22 @@ export function renderPageByURL(url: string) {
   reachAPI(url).then((data) => {
     // First, get the UL element handle.
     const ulItem = <HTMLElement>document.querySelector(".index-content");
-    
+
     // Then, clear the UL element from any children it may contain.
     clearLIElementsFromElement(ulItem);
+    
+    // From data, we extract the URLs of the previous and next pages. This 
+    // will useful for navigation purposes.
+    const nextPage = data["next"];
+    const previousPage = data["previous"];
 
-    const processor = new IndexItemProcessor();
-    // Then, write data to the UL element.
-    // console.log(ulItem.children, data);
-    writeItemsToHTMLList(data, ulItem, processor);
-    // console.log(ulItem.children);
+    // Then, we extract the actual data that we will render in our page 
+    // (aka results).
+    const results = data["results"];
+
+    const processor = new ChildrenItemProcessor();
+    // Then, write results to the UL element.
+    writeItemsToHTMLList(results, ulItem, processor);
   });
 }
 
@@ -102,7 +101,7 @@ export class IndexItemProcessor extends ItemProcessor {
     objectKey: keyof Object,
     objectValue: Object,
     parentHandle: HTMLElement
-  ) {
+  ): void {
     const sectionName: Object = this.INDEX_SECTIONS_MAPPING[objectKey];
     if (sectionName !== undefined) {
       // Create the list element.
@@ -116,11 +115,9 @@ export class IndexItemProcessor extends ItemProcessor {
       // UL element.
       a.onclick = () => {
         const newItems = renderPageByURL(objectValue.toString());
-        // console.log(newItems);
       };
 
       // Set the text to the mapping we created in this file. This is so the text makes more sense.
-
       a.innerText = sectionName.toString();
 
       // Append the hyperlink to the list element.
@@ -128,5 +125,38 @@ export class IndexItemProcessor extends ItemProcessor {
 
       parentHandle.appendChild(li);
     }
+  }
+}
+
+export class ChildrenItemProcessor extends ItemProcessor {
+  /* This class is used to create children using for a specified
+  parent handle.
+  */
+  createChild(
+    objectKey: string,
+    objectValue: Object,
+    parentHandle: HTMLElement
+  ): void {
+    // In the case of children, we don't filter any element in order to render the right names
+    // using a dictionary. Instead, we just grab the items and render their .name property.    
+
+     // Create the list element.
+     const li = document.createElement("li");
+
+     // Create the hyperlink element, and set some of its attributes.
+     const a = document.createElement("a");
+     a.setAttribute("class", "index-item");
+     // Retrieve the name, and use it as the innerText of the <a> element.
+     // Notice that we create a key object in order to extract it's value from the object.
+     const nameKey = "name" as keyof typeof objectValue;
+     a.innerText = objectValue[nameKey].toString();
+
+     // Set the text to the mapping we created in this file. This is so the text makes more sense.
+     a.innerText = objectValue[nameKey].toString();
+
+     // Append the hyperlink to the list element.
+     li.appendChild(a);
+
+     parentHandle.appendChild(li);
   }
 }
