@@ -12,3 +12,7 @@ Things that I haven't covered yet but it would be cool to do
 * Packaging using Vite.
 * Implement some proper CSS for this.
 * Start using React.js.
+
+## Setup
+1. Clone repo.
+2. Run ">> npm -install".
